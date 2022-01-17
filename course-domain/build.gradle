@@ -1,0 +1,8 @@
+version '1.0.0-SNAPSHOT'
+
+dependencies {
+    implementation project(":commons-domain")
+    implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.2.0'
+    testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '4.2.0'
+}

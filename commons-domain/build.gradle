@@ -1,0 +1,7 @@
+version '1.0.0-SNAPSHOT'
+
+dependencies {
+    implementation group: 'org.glassfish', name: 'jakarta.el', version: '4.0.1'
+    implementation group: 'org.hibernate.validator', name: 'hibernate-validator', version: '7.0.2.Final'
+    implementation group: 'org.hibernate.validator', name: 'hibernate-validator-cdi', version: '7.0.2.Final'
+}
