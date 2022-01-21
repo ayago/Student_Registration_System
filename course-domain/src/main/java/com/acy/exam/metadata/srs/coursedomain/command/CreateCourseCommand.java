@@ -1,8 +1,10 @@
 package com.acy.exam.metadata.srs.coursedomain.command;
 
 import jakarta.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+@EqualsAndHashCode
 public class CreateCourseCommand {
 
     @Getter

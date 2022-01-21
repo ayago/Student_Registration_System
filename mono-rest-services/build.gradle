@@ -1,0 +1,22 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+version '1.0.0-SNAPSHOT'
+
+//since course-domain, nor is it's underlying dependency to domains-common are not spring,
+//we use extensions to force their following dependencies to specific version which are otherwise overridden by spring plugins
+//see https://docs.spring.io/spring-boot/docs/2.5.3/gradle-plugin/reference/htmlsingle/#managing-dependencies.dependency-management-plugin.customizing
+ext['jakarta-validation.version'] = '3.0.0'
+ext['hibernate-validator.version'] = '7.0.2.Final'
+ext['glassfish-el.version'] = '4.0.1'
+
+dependencies {
+    implementation project(":domains-common")
+    implementation project(":course-domain")
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'io.projectreactor:reactor-test'
+}
+

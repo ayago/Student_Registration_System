@@ -1,7 +1,9 @@
 package com.acy.exam.metadata.srs.coursedomain;
 
-public interface CourseDomainRepository {
-    boolean isNotYetUsed(String courseCode);
+import reactor.core.publisher.Mono;
 
-    void save(CourseState courseState);
+public interface CourseDomainRepository {
+    Mono<Boolean> isNotYetUsed(String courseCode);
+
+    Mono<Void> save(CourseState courseState);
 }

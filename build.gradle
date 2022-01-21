@@ -51,3 +51,15 @@ subprojects {
 
     check.dependsOn jacocoTestCoverageVerification
 }
+
+configure(subprojects.findAll({it -> it.name.endsWith("-domain")})) {
+    dependencies {
+        implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.14'
+        implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.0'
+        testImplementation group: 'io.projectreactor', name: 'reactor-test', version: '3.4.14'
+        testImplementation group: 'io.projectreactor.tools', name: 'blockhound-junit-platform', version: '1.0.6.RELEASE'
+        testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.8.2'
+        testImplementation group: 'org.mockito', name: 'mockito-core', version: '4.2.0'
+        testImplementation group: 'org.mockito', name: 'mockito-junit-jupiter', version: '4.2.0'
+    }
+}
