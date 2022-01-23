@@ -1,3 +1,3 @@
 # SRS App
 
-![Coverage below required](../.github/badges/mono-rest-services/jacoco/coverage.svg)
+![Coverage below required](../.github/badges/srs-app/jacoco/coverage.svg)
