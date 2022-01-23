@@ -4,8 +4,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class StudentRegistrationSystemMonoApplication {
+public class StudentRegistrationSystemApplication {
     public static void main(String[] args) {
-        SpringApplication.run(StudentRegistrationSystemMonoApplication.class, args);
+        SpringApplication.run(StudentRegistrationSystemApplication.class, args);
     }
 }
