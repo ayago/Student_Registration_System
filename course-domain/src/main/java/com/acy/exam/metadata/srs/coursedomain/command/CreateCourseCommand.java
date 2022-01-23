@@ -1,6 +1,8 @@
 package com.acy.exam.metadata.srs.coursedomain.command;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -9,6 +11,7 @@ public class CreateCourseCommand {
 
     @Getter
     @NotNull
+    @Size(max = 50, message = "length must not be greater than {max}")
     private String name;
 
     @Getter
@@ -17,6 +20,8 @@ public class CreateCourseCommand {
 
     @Getter
     @NotNull
+    @Pattern(
+        regexp = "^[A-Z]{3}[0-9]{3}$", message = "must be prefixed with 3 capital letters followed by three integers")
     private String courseCode;
 
     public CreateCourseCommand setName(String name) {
