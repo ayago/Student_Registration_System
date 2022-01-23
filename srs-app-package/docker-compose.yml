@@ -1,0 +1,43 @@
+version: '3'
+services:
+  srs_database:
+    container_name: srs_database
+    hostname: srs_database
+    image: mysql/mysql-server:8.0.23
+    volumes:
+      - app_db:/var/lib/mysql
+      - ./mysql-dump:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_DATABASE: srs
+      MYSQL_ROOT_HOST: '%'
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    restart: unless-stopped
+    networks:
+      - backend
+
+  srs_app:
+    container_name: srs_app
+    hostname: srs_app
+    build:
+      context: ../srs-app
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    restart: unless-stopped
+    environment:
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    depends_on:
+      - srs_database
+    networks:
+      - backend
+
+# Networks to be created to facilitate communication between containers
+networks:
+  backend:
+
+volumes:
+  app_db:
