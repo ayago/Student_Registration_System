@@ -1,0 +1,12 @@
+spring:
+  liquibase:
+    url: jdbc:mysql://localhost/srs?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+    user: root
+    password: ${MYSQL_PASSWORD}
+    changeLog: classpath:db/db.changelog-master.yml
+  r2dbc:
+    url: r2dbc:mysql://localhost/srs
+    username: root
+    password: ${MYSQL_PASSWORD}
+  jackson:
+    default-property-inclusion: NON_EMPTY

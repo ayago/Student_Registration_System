@@ -1,0 +1,88 @@
+databaseChangeLog:
+  - logicalFilePath: "db/changelogs/create-initial.yml"
+  - changeSet:
+      id: create-course-table
+      author: ayago
+      createTable:
+        tableName: courses
+        schemaName: srs
+        columns:
+          - column:
+              name: course_code
+              type: varchar(6)
+              constraints:
+                primaryKey: true
+                nullable: false
+          - column:
+              name: name
+              type: varchar(50)
+              constraints:
+                nullable: false
+                unique: true
+          - column:
+              name: units
+              type: integer
+              constraints:
+                nullable: false
+          - column:
+              name: date_created
+              type: date
+              constraints:
+                nullable: false
+          - column:
+              name: date_updated
+              type: date
+              constraints:
+                nullable: true
+      rollback:
+        - dropTable:
+            cascadeConstraints: true
+            schemaName: srs
+            tableName: courses
+  - changeSet:
+      id: initial-courses
+      author: ayago
+      changes:
+        - insert:
+            columns:
+              - column:
+                  name: course_code
+                  value: MAT103
+              - column:
+                  name: name
+                  value: Basic Math
+              - column:
+                  name: units
+                  value: 3
+              - column:
+                  name: date_created
+                  valueDate: "now()"
+            dbms: '!h2,  mysql'
+            schemaName: srs
+            tableName: courses
+        - insert:
+            columns:
+              - column:
+                  name: course_code
+                  value: PHE102
+              - column:
+                  name: name
+                  value: Physical Education 1
+              - column:
+                  name: units
+                  value: 2
+              - column:
+                  name: date_created
+                  valueDate: "now()"
+            dbms: '!h2,  mysql'
+            schemaName: srs
+            tableName: courses
+      rollback:
+        - delete:
+            schemaName: srs
+            tableName: courses
+            where: course_code='MAT103'
+        - delete:
+            schemaName: srs
+            tableName: courses
+            where: course_code='PHE102'

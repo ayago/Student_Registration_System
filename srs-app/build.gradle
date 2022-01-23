@@ -1,0 +1,27 @@
+plugins {
+    id 'org.springframework.boot' version '2.6.2'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+version '1.0.0-SNAPSHOT'
+
+//since course-domain, nor is it's underlying dependency to domains-common are not spring,
+//we use extensions to force their following dependencies to specific version which are otherwise overridden by spring plugins
+//see https://docs.spring.io/spring-boot/docs/2.5.3/gradle-plugin/reference/htmlsingle/#managing-dependencies.dependency-management-plugin.customizing
+ext['jakarta-validation.version'] = '3.0.0'
+ext['hibernate-validator.version'] = '7.0.2.Final'
+ext['glassfish-el.version'] = '4.0.1'
+
+dependencies {
+    implementation project(":domains-common")
+    implementation project(":course-domain")
+    implementation group: 'org.liquibase', name: 'liquibase-core'
+    implementation group: 'mysql', name: 'mysql-connector-java'
+    implementation group: 'org.springframework', name: 'spring-jdbc'
+    implementation group: 'dev.miku', name: 'r2dbc-mysql'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-data-r2dbc'
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-webflux'
+    testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test'
+    testImplementation group: 'io.projectreactor', name: 'reactor-test'
+}
+
