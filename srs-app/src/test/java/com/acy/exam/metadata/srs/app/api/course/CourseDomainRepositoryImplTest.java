@@ -3,7 +3,6 @@ package com.acy.exam.metadata.srs.app.api.course;
 import com.acy.exam.metadata.srs.app.data.entity.CourseEntity;
 import com.acy.exam.metadata.srs.app.data.repository.CourseEntityRepository;
 import com.acy.exam.metadata.srs.coursedomain.CourseState;
-import com.acy.exam.metadata.srs.coursedomain.command.CreateCourseCommand;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,25 +35,29 @@ public class CourseDomainRepositoryImplTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     public void isNotYetUsed(boolean expected){
-        when(courseEntityRepository.existsById(anyString())).thenReturn(Mono.just(!expected));
+        when(courseEntityRepository.existsByCourseCodeOrName(anyString(), anyString()))
+            .thenReturn(Mono.just(!expected));
 
-        StepVerifier.create(courseDomainRepository.isNotYetUsed("TEST12"))
+        StepVerifier.create(courseDomainRepository.isNotYetUsed("TEST12", "Subject Alpha"))
             .expectNext(expected)
             .verifyComplete();
 
-        verify(courseEntityRepository, times(1)).existsById(eq("TEST12"));
+        verify(courseEntityRepository, times(1))
+            .existsByCourseCodeOrName(eq("TEST12"), eq("Subject Alpha"));
         verifyNoMoreInteractions(courseEntityRepository);
     }
 
     @Test
     public void isNotYetUsedError(){
-        when(courseEntityRepository.existsById(anyString())).thenReturn(Mono.error(new RuntimeException()));
+        when(courseEntityRepository.existsByCourseCodeOrName(anyString(), anyString()))
+            .thenReturn(Mono.error(new RuntimeException()));
 
-        StepVerifier.create(courseDomainRepository.isNotYetUsed("TEST12"))
+        StepVerifier.create(courseDomainRepository.isNotYetUsed("TEST12", "Subject Alpha"))
             .expectError(RuntimeException.class)
             .verify();
 
-        verify(courseEntityRepository, times(1)).existsById(eq("TEST12"));
+        verify(courseEntityRepository, times(1))
+            .existsByCourseCodeOrName(eq("TEST12"), eq("Subject Alpha"));
         verifyNoMoreInteractions(courseEntityRepository);
     }
 

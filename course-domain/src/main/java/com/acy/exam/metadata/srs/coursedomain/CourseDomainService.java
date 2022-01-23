@@ -29,8 +29,11 @@ public class CourseDomainService {
         return isUniqueCourseCode(command)
             .flatMap(passedCheck -> passedCheck ?
                 Mono.just(command) :
-                Mono.error(() ->
-                    new CommandConflictException("Course code "+command.getCourseCode()+" is already used"))
+                Mono.error(() -> {
+                    String message = String.format(
+                        "Course with code %s or name %s is already used", command.getCourseCode(), command.getName());
+                    return new CommandConflictException(message);
+                })
             )
             .flatMap(this::createCourseAggregate)
             .flatMap(course -> {
@@ -58,11 +61,12 @@ public class CourseDomainService {
     private Mono<Boolean> isUniqueCourseCode(CreateCourseCommand command){
         return Mono.defer(() -> {
             String courseCode = command.getCourseCode();
-            if(isNull(courseCode)) {
+            String name = command.getName();
+            if(isNull(courseCode) && isNull(name)) {
                 return Mono.just(true);
             }
 
-            return repository.isNotYetUsed(courseCode);
+            return repository.isNotYetUsed(courseCode, name);
         });
     }
 }

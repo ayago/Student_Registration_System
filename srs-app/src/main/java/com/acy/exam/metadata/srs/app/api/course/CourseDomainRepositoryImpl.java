@@ -17,8 +17,8 @@ public class CourseDomainRepositoryImpl implements CourseDomainRepository {
     }
 
     @Override
-    public Mono<Boolean> isNotYetUsed(String courseCode) {
-        return courseEntityRepository.existsById(courseCode).map(exists -> !exists);
+    public Mono<Boolean> isNotYetUsed(String courseCode, String name) {
+        return courseEntityRepository.existsByCourseCodeOrName(courseCode, name).map(exists -> !exists);
     }
 
     @Override
