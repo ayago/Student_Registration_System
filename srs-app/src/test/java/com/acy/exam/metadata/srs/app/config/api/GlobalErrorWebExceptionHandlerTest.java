@@ -4,6 +4,7 @@ import com.acy.exam.metadata.srs.app.config.api.ErrorHandlerTestController.Error
 import com.acy.exam.metadata.srs.commons.domain.CommandConflictException;
 import com.acy.exam.metadata.srs.commons.domain.CommandValidationException;
 import com.acy.exam.metadata.srs.commons.domain.FieldError;
+import com.acy.exam.metadata.srs.commons.domain.RecordNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -128,6 +129,11 @@ public class GlobalErrorWebExceptionHandlerTest {
                             .put("message", "test Message")
                         )
                     )
+            ),
+            Arguments.of(
+                new RecordNotFoundException("Record 2019 not found"),
+                HttpStatus.NOT_FOUND,
+                new JSONObject().put("message", "Record 2019 not found")
             )
         );
     }

@@ -2,6 +2,7 @@ package com.acy.exam.metadata.srs.app.config.api;
 
 import com.acy.exam.metadata.srs.commons.domain.CommandConflictException;
 import com.acy.exam.metadata.srs.commons.domain.CommandValidationException;
+import com.acy.exam.metadata.srs.commons.domain.RecordNotFoundException;
 import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.boot.autoconfigure.web.reactive.error.AbstractErrorWebExceptionHandler;
 import org.springframework.boot.web.reactive.error.ErrorAttributes;
@@ -27,7 +28,8 @@ public class GlobalErrorWebExceptionHandler extends AbstractErrorWebExceptionHan
 
     private static final Map<Class<? extends Throwable>, HttpStatus> EXCEPTION_HTTP_STATUS_MAP = Map.of(
         CommandConflictException.class, HttpStatus.CONFLICT,
-        CommandValidationException.class, HttpStatus.UNPROCESSABLE_ENTITY
+        CommandValidationException.class, HttpStatus.UNPROCESSABLE_ENTITY,
+        RecordNotFoundException.class, HttpStatus.NOT_FOUND
     );
 
     public GlobalErrorWebExceptionHandler(
