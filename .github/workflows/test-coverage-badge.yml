@@ -47,13 +47,16 @@ jobs:
         badges-directory: .github/badges/srs-app/jacoco
     - name: Amend commit if any of the badges changed
       run: |
-        if [[ `git status --porcelain` ]]; then
-          echo "changes in badge detected ${{ github.head_ref }}"
-          git fetch --all
-          git checkout ${{ github.head_ref }}
-          git config --global user.name 'Adrian Yago'
-          git config --global user.email 'ayago@users.noreply.github.com'
-          git add --all
-          git commit -m "[GA: test-coverage-badge]: Updated test coverage badges"
-          git push
+        if [[ `git status --porcelain` ]];
+          then
+            echo "changes in badge detected ${{ github.head_ref }}"
+            git fetch --all
+            git checkout ${{ github.head_ref }}
+            git config --global user.name 'Adrian Yago'
+            git config --global user.email 'ayago@users.noreply.github.com'
+            git add --all
+            git commit -m "[GA: test-coverage-badge]: Updated test coverage badges"
+            git push
+          else
+            echo "No changes in badges after test run"
         fi
