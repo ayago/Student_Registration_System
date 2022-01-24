@@ -1,6 +1,5 @@
 package com.acy.exam.metadata.srs.commons.domain;
 
-import com.acy.exam.metadata.srs.commons.domain.CommandValidationException.FieldError;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -26,6 +25,24 @@ public class CommandValidatorTest{
 
         var capturedException = assertThrows(
             CommandValidationException.class, () -> CommandValidator.validateCommand(testObject, "Error Message"));
+
+        assertNotNull(capturedException);
+        assertAll(
+            () -> assertEquals("Error Message", capturedException.getMessage()),
+            () -> assertEquals(expectedErrors(), capturedException.fieldErrors)
+        );
+    }
+
+    @Test
+    public void validateState(){
+        var testObject = new TestValidateableObject();
+
+        testObject.childObjects = List.of(
+            new TestValidateableChildObject()
+        );
+
+        var capturedException = assertThrows(
+            StateValidationException.class, () -> CommandValidator.validateState(testObject, "Error Message"));
 
         assertNotNull(capturedException);
         assertAll(

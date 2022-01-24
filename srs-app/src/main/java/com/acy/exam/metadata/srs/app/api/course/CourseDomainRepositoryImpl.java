@@ -22,6 +22,11 @@ public class CourseDomainRepositoryImpl implements CourseDomainRepository {
     }
 
     @Override
+    public Mono<Boolean> nameIsNotYetUsedByOthers(String courseCode, String name) {
+        return Mono.empty();
+    }
+
+    @Override
     public Mono<Void> save(CourseState courseState) {
         return Mono.defer(() -> {
             CourseEntity entity = new CourseEntity()
@@ -33,5 +38,10 @@ public class CourseDomainRepositoryImpl implements CourseDomainRepository {
 
             return courseEntityRepository.save(entity);
         }).flatMap(e -> Mono.empty());
+    }
+
+    @Override
+    public Mono<CourseState> getCurrentStateOfCourse(String courseCode) {
+        return Mono.empty();
     }
 }
