@@ -3,6 +3,7 @@ package com.acy.exam.metadata.srs.app.config.api;
 import com.acy.exam.metadata.srs.app.config.api.ErrorHandlerTestController.ErrorHandlerTestService;
 import com.acy.exam.metadata.srs.commons.domain.CommandConflictException;
 import com.acy.exam.metadata.srs.commons.domain.CommandValidationException;
+import com.acy.exam.metadata.srs.commons.domain.FieldError;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -109,8 +110,8 @@ public class GlobalErrorWebExceptionHandlerTest {
             Arguments.of(
                 new CommandValidationException(
                     Set.of(
-                        new CommandValidationException.FieldError("someField", "test Message"),
-                        new CommandValidationException.FieldError("anotherField", "another message")
+                        new FieldError("someField", "test Message"),
+                        new FieldError("anotherField", "another message")
                     ),
                     "Command validation error"
                 ),

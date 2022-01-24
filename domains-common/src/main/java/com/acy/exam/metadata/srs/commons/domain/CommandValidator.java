@@ -1,6 +1,5 @@
 package com.acy.exam.metadata.srs.commons.domain;
 
-import com.acy.exam.metadata.srs.commons.domain.CommandValidationException.FieldError;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -22,17 +21,26 @@ public final class CommandValidator{
 
         Set<ConstraintViolation<E>> violations = VALIDATOR.validate(command);
         if(!violations.isEmpty()){
-            throw buildException(violations, message);
+            var fieldErrors = parseFieldErrors(violations);
+            throw new CommandValidationException(fieldErrors, message);
         }
     }
 
-    private static <E> CommandValidationException buildException(
-        Set<ConstraintViolation<E>> constraintViolations, String message){
+    public static <E> void validateState(E state, String message){
+
+        Set<ConstraintViolation<E>> violations = VALIDATOR.validate(state);
+        if(!violations.isEmpty()){
+            var fieldErrors = parseFieldErrors(violations);
+            throw new StateValidationException(fieldErrors, message);
+        }
+    }
+
+    private static <E> Set<FieldError> parseFieldErrors(Set<ConstraintViolation<E>> constraintViolations) {
         Set<FieldError> fieldErrors = constraintViolations.stream()
             .map(CommandValidator::resolveFieldError)
             .collect(Collectors.toUnmodifiableSet());
 
-        return new CommandValidationException(fieldErrors, message);
+        return fieldErrors;
     }
 
     private static FieldError resolveFieldError(ConstraintViolation<?> constraintViolation){
