@@ -1,8 +1,11 @@
 package com.acy.exam.metadata.srs.app.api.course;
 
 import com.acy.exam.metadata.srs.coursedomain.command.CreateCourseCommand;
+import com.acy.exam.metadata.srs.coursedomain.command.UpdateCourseCommand;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,6 +29,16 @@ public class CourseController {
             .map(courseCode -> {
                 URI location = URI.create(String.format("/courses/%s", courseCode));
                 return ResponseEntity.created(location).build();
+            });
+    }
+
+    @PutMapping("/{courseCode}")
+    public Mono<ResponseEntity<String>> updateCourse(
+        @PathVariable("courseCode") String courseCode, @RequestBody UpdateCourseCommand command){
+        return courseService.processUpdateCommand(courseCode, command)
+            .map(updatedCourseCode -> {
+                String message = String.format("Successfully updated course %s.", updatedCourseCode);
+                return ResponseEntity.ok(message);
             });
     }
 }

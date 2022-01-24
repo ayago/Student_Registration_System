@@ -10,3 +10,9 @@ spring:
     password: ${MYSQL_PASSWORD}
   jackson:
     default-property-inclusion: NON_EMPTY
+
+logging:
+  level:
+    org:
+      springframework:
+        r2dbc: DEBUG

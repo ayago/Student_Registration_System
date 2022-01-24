@@ -8,4 +8,6 @@ import reactor.core.publisher.Mono;
 @Repository
 public interface CourseEntityRepository extends ReactiveCrudRepository<CourseEntity, String> {
     Mono<Boolean> existsByCourseCodeOrName(String courseCode, String name);
+
+    Mono<Boolean> existsByNameAndCourseCodeNot(String name, String courseCode);
 }

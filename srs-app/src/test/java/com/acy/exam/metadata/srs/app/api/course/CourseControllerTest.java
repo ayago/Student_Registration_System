@@ -1,6 +1,7 @@
 package com.acy.exam.metadata.srs.app.api.course;
 
 import com.acy.exam.metadata.srs.coursedomain.command.CreateCourseCommand;
+import com.acy.exam.metadata.srs.coursedomain.command.UpdateCourseCommand;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,6 +54,31 @@ public class CourseControllerTest {
             .setName("Sample Course");
 
         verify(courseService, times(1)).processCreateCommand(eq(expectedRequest));
+        verifyNoMoreInteractions(courseService);
+    }
+
+    @Test
+    public void updateCourse() throws JSONException {
+        when(courseService.processUpdateCommand(anyString(), any(UpdateCourseCommand.class)))
+            .thenReturn(Mono.just("SXE"));
+
+        JSONObject request = new JSONObject()
+            .put("name", "Sample Course")
+            .put("units", 2);
+
+        testClient.put()
+            .uri("/courses/SXE")
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(request.toString())
+            .exchange()
+            .expectStatus().isOk()
+            .expectBody(String.class).isEqualTo("Successfully updated course SXE.");
+
+        UpdateCourseCommand expectedCommand = new UpdateCourseCommand()
+            .setUnits(2)
+            .setName("Sample Course");
+
+        verify(courseService, times(1)).processUpdateCommand(eq("SXE"), eq(expectedCommand));
         verifyNoMoreInteractions(courseService);
     }
 }

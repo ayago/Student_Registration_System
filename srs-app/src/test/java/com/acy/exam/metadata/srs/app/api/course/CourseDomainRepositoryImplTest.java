@@ -120,4 +120,46 @@ public class CourseDomainRepositoryImplTest {
         verify(courseEntityRepository, times(1)).save(eq(expectedEntity));
         verifyNoMoreInteractions(courseEntityRepository);
     }
+
+    @ParameterizedTest
+    @ValueSource(booleans = {true, false})
+    public void nameIsNotYetUsedByOthers(boolean expected){
+        when(courseEntityRepository.existsByNameAndCourseCodeNot(anyString(), anyString()))
+            .thenReturn(Mono.just(!expected));
+
+        StepVerifier.create(courseDomainRepository.nameIsNotYetUsedByOthers("TEST12", "Subject Alpha"))
+            .expectNext(expected)
+            .verifyComplete();
+
+        verify(courseEntityRepository, times(1))
+            .existsByNameAndCourseCodeNot(eq("Subject Alpha"), eq("TEST12"));
+        verifyNoMoreInteractions(courseEntityRepository);
+    }
+
+    @Test
+    public void getCurrentStateOfCourse(){
+        CourseEntity courseEntity = new CourseEntity()
+            .setName("Sample Subject")
+            .setCourseCode("SHS123")
+            .setUnits(1)
+            .setDateCreated(LocalDate.of(2022, 1, 24))
+            .setDateUpdated(LocalDate.of(2022, 1, 25));
+
+        when(courseEntityRepository.findById(anyString())).thenReturn(Mono.just(courseEntity));
+
+        CourseState expected = CourseState.builder()
+            .name("Sample Subject")
+            .courseCode("SHS123")
+            .units(1)
+            .dateCreated(LocalDate.of(2022, 1, 24))
+            .dateUpdated(LocalDate.of(2022, 1, 25))
+            .build();
+
+        StepVerifier.create(courseDomainRepository.getCurrentStateOfCourse("SHS123"))
+            .expectNext(expected)
+            .verifyComplete();
+
+        verify(courseEntityRepository, times(1)).findById(eq("SHS123"));
+        verifyNoMoreInteractions(courseEntityRepository);
+    }
 }

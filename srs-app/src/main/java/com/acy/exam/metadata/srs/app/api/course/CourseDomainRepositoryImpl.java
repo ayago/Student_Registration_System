@@ -23,7 +23,7 @@ public class CourseDomainRepositoryImpl implements CourseDomainRepository {
 
     @Override
     public Mono<Boolean> nameIsNotYetUsedByOthers(String courseCode, String name) {
-        return Mono.empty();
+        return courseEntityRepository.existsByNameAndCourseCodeNot(name, courseCode).map(exists -> !exists);
     }
 
     @Override
@@ -42,6 +42,14 @@ public class CourseDomainRepositoryImpl implements CourseDomainRepository {
 
     @Override
     public Mono<CourseState> getCurrentStateOfCourse(String courseCode) {
-        return Mono.empty();
+        return courseEntityRepository.findById(courseCode)
+            .map(courseEntity -> CourseState.builder()
+                .courseCode(courseEntity.getCourseCode())
+                .name(courseEntity.getName())
+                .units(courseEntity.getUnits())
+                .dateCreated(courseEntity.getDateCreated())
+                .dateUpdated(courseEntity.getDateUpdated())
+                .build()
+            );
     }
 }
