@@ -21,7 +21,7 @@ public class StudentDomainService {
         this.eventPublisher = eventPublisher;
 
         boolean generateEvent = nonNull(eventPublisher);
-        this.studentFactory = new StudentFactory(repository, generateEvent);
+        this.studentFactory = new StudentFactory(repository::generateNextStudentNumber, generateEvent);
     }
 
     public Mono<String> registerNewStudent(RegisterStudentCommand command) {

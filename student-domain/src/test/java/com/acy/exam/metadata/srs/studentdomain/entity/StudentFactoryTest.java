@@ -2,7 +2,6 @@ package com.acy.exam.metadata.srs.studentdomain.entity;
 
 import com.acy.exam.metadata.srs.commons.domain.CommandValidationException;
 import com.acy.exam.metadata.srs.commons.domain.FieldError;
-import com.acy.exam.metadata.srs.studentdomain.StudentDomainRepository;
 import com.acy.exam.metadata.srs.studentdomain.StudentState;
 import com.acy.exam.metadata.srs.studentdomain.command.RegisterStudentCommand;
 import com.acy.exam.metadata.srs.studentdomain.event.NewStudentEvent;
@@ -20,6 +19,7 @@ import reactor.test.StepVerifier;
 
 import java.time.LocalDate;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,14 +36,14 @@ import static org.mockito.Mockito.when;
 public class StudentFactoryTest {
 
     @Mock
-    StudentDomainRepository studentDomainRepository;
+    Supplier<Mono<String>> idValueGenerator;
 
     @ParameterizedTest
     @ValueSource(booleans = {false, true})
     public void createStudent(boolean generateEvent){
         //given
-        StudentFactory studentFactory = new StudentFactory(studentDomainRepository, generateEvent);
-        when(studentDomainRepository.generateNextStudentNumber()).thenReturn(Mono.just("200810498"));
+        StudentFactory studentFactory = new StudentFactory(idValueGenerator, generateEvent);
+        when(idValueGenerator.get()).thenReturn(Mono.just("200810498"));
 
         RegisterStudentCommand command = new RegisterStudentCommand()
             .setFirstName("Baby")
@@ -79,16 +79,16 @@ public class StudentFactoryTest {
             })
             .verifyComplete();
 
-        verify(studentDomainRepository, times(1)).generateNextStudentNumber();
-        verifyNoMoreInteractions(studentDomainRepository);
+        verify(idValueGenerator, times(1)).get();
+        verifyNoMoreInteractions(idValueGenerator);
     }
 
     @ParameterizedTest
     @MethodSource("invalidStudentNumberOnRegisterParams")
     public void invalidStudentNumberOnRegister(Mono<String> erroneousResponse){
         //given
-        StudentFactory studentFactory = new StudentFactory(studentDomainRepository, false);
-        when(studentDomainRepository.generateNextStudentNumber()).thenReturn(erroneousResponse);
+        StudentFactory studentFactory = new StudentFactory(idValueGenerator, false);
+        when(idValueGenerator.get()).thenReturn(erroneousResponse);
 
         RegisterStudentCommand command = new RegisterStudentCommand()
             .setFirstName("Baby")
@@ -109,8 +109,8 @@ public class StudentFactoryTest {
             })
             .verify();
 
-        verify(studentDomainRepository, times(1)).generateNextStudentNumber();
-        verifyNoMoreInteractions(studentDomainRepository);
+        verify(idValueGenerator, times(1)).get();
+        verifyNoMoreInteractions(idValueGenerator);
     }
 
     private static Stream<Arguments> invalidStudentNumberOnRegisterParams(){
@@ -124,7 +124,7 @@ public class StudentFactoryTest {
     @MethodSource("invalidRegisterCommandParams")
     public void invalidRegisterCommand(RegisterStudentCommand givenCommand, Set<FieldError> expectedFieldErrors){
         //given
-        StudentFactory studentFactory = new StudentFactory(studentDomainRepository, false);
+        StudentFactory studentFactory = new StudentFactory(idValueGenerator, false);
 
         //when
         StepVerifier.create(studentFactory.createStudent(givenCommand))
@@ -146,7 +146,7 @@ public class StudentFactoryTest {
             })
             .verify();
 
-        verifyNoInteractions(studentDomainRepository);
+        verifyNoInteractions(idValueGenerator);
     }
 
     private static Stream<Arguments> invalidRegisterCommandParams(){
