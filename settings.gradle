@@ -8,5 +8,5 @@
  */
 
 rootProject.name = 'School_Registration_System'
-include 'domains-common','course-domain','srs-app'
+include 'domains-common','course-domain','student-domain','srs-app'
 

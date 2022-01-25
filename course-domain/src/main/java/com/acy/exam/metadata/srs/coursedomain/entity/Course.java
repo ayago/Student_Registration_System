@@ -1,5 +1,6 @@
 package com.acy.exam.metadata.srs.coursedomain.entity;
 
+import com.acy.exam.metadata.srs.commons.domain.Aggregate;
 import com.acy.exam.metadata.srs.commons.domain.CommandValidator;
 import com.acy.exam.metadata.srs.commons.domain.Event;
 import com.acy.exam.metadata.srs.coursedomain.CourseState;
@@ -11,7 +12,7 @@ import com.acy.exam.metadata.srs.coursedomain.event.NewCourseEvent;
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class Course {
+public class Course implements Aggregate {
 
     public final CourseCode courseCode;
     private final String name;
