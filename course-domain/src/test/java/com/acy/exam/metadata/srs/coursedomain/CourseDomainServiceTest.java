@@ -192,9 +192,9 @@ public class CourseDomainServiceTest {
                 new CreateCourseCommand(),
                 new CommandValidationException(
                     Set.of(
-                        new FieldError("name", "must not be null"),
+                        new FieldError("name", "must not be empty"),
                         new FieldError("units", "must not be null"),
-                        new FieldError("courseCode", "must not be null")
+                        new FieldError("courseCode", "must not be empty")
                     ),
                     "Cannot create course due to validation errors"
                 )
@@ -202,11 +202,12 @@ public class CourseDomainServiceTest {
             Arguments.of(
                 new CreateCourseCommand()
                     .setName(RandomStringUtils.randomAlphanumeric(51))
+                    .setUnits(-1)
                     .setCourseCode("ZAXY65431"),
                 new CommandValidationException(
                     Set.of(
                         new FieldError("name", "length must not be greater than 50"),
-                        new FieldError("units", "must not be null"),
+                        new FieldError("units", "must not be less than 0"),
                         new FieldError(
                             "courseCode", "must be prefixed with 3 capital letters followed by three integers")
                     ),
@@ -353,20 +354,21 @@ public class CourseDomainServiceTest {
                 CourseState.builder().build(),
                 Set.of(
                     new FieldError("dateCreated", "must not be null"),
-                    new FieldError("name", "must not be null"),
+                    new FieldError("name", "must not be empty"),
                     new FieldError("units", "must not be null"),
-                    new FieldError("courseCode", "must not be null")
+                    new FieldError("courseCode", "must not be empty")
                 )
             ),
             Arguments.of(
                 CourseState.builder()
                     .name(RandomStringUtils.randomAlphanumeric(54))
                     .dateCreated(LocalDate.now())
-                    .units(4)
+                    .units(-1)
                     .courseCode("ABC9DF8")
                     .build(),
                 Set.of(
                     new FieldError("name", "length must not be greater than 50"),
+                    new FieldError("units", "must not be less than 0"),
                     new FieldError(
                         "courseCode", "must be prefixed with 3 capital letters followed by three integers")
                 )
@@ -474,15 +476,16 @@ public class CourseDomainServiceTest {
             Arguments.of(
                 new UpdateCourseCommand(),
                 Set.of(
-                    new FieldError("name", "must not be null"),
+                    new FieldError("name", "must not be empty"),
                     new FieldError("units", "must not be null")
                 )
             ),
             Arguments.of(
                 new UpdateCourseCommand()
                     .setName(RandomStringUtils.randomAlphanumeric(54))
-                    .setUnits(4),
+                    .setUnits(-1),
                 Set.of(
+                    new FieldError("units", "must not be less than 0"),
                     new FieldError("name", "length must not be greater than 50")
                 )
             )
