@@ -1,5 +1,7 @@
 package com.acy.exam.metadata.srs.coursedomain;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -13,16 +15,17 @@ import java.util.Optional;
 @EqualsAndHashCode
 public class CourseState {
 
-    @NotNull
+    @NotEmpty
     @Pattern(
         regexp = "^[A-Z]{3}[0-9]{3}$", message = "must be prefixed with 3 capital letters followed by three integers")
     public final String courseCode;
 
-    @NotNull
+    @NotEmpty
     @Size(max = 50, message = "length must not be greater than {max}")
     public final String name;
 
     @NotNull
+    @Min(value = 0L, message = "must not be less than {value}")
     public final Integer units;
 
     @NotNull
