@@ -13,8 +13,8 @@ ext['hibernate-validator.version'] = '7.0.2.Final'
 ext['glassfish-el.version'] = '4.0.1'
 
 dependencies {
-    implementation project(":domains-common")
-    implementation project(":course-domain")
+    implementation project(":domain:course-domain")
+    implementation project(":domain:domains-common")
     implementation group: 'org.liquibase', name: 'liquibase-core'
     runtimeOnly group: 'mysql', name: 'mysql-connector-java'
     implementation group: 'org.springframework', name: 'spring-jdbc'
