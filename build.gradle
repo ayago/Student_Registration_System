@@ -9,7 +9,7 @@ buildscript {
     }
 }
 
-subprojects {
+configure(subprojects.findAll {it.name != 'domain'}) {
     group = 'com.acy.exam.metadata.srs'
     apply plugin: 'java'
     apply plugin: 'jacoco'
@@ -52,7 +52,7 @@ subprojects {
     check.dependsOn jacocoTestCoverageVerification
 }
 
-configure(subprojects.findAll({it -> it.name.endsWith("-domain")})) {
+configure(subprojects.findAll {it -> it.name.endsWith("-domain")}) {
     dependencies {
         implementation group: 'io.projectreactor', name: 'reactor-core', version: '3.4.14'
         implementation group: 'jakarta.validation', name: 'jakarta.validation-api', version: '3.0.0'

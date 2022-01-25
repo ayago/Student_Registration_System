@@ -8,5 +8,10 @@
  */
 
 rootProject.name = 'School_Registration_System'
-include 'domains-common','course-domain','student-domain','srs-app'
-
+include 'srs-app'
+include ':domain:student-domain'
+findProject(':domain:student-domain')?.name = 'student-domain'
+include ':domain:domains-common'
+findProject(':domain:domains-common')?.name = 'domains-common'
+include ':domain:course-domain'
+findProject(':domain:course-domain')?.name = 'course-domain'
