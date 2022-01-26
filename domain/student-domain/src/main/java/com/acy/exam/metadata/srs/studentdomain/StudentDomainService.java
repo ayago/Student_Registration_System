@@ -1,6 +1,8 @@
 package com.acy.exam.metadata.srs.studentdomain;
 
+import com.acy.exam.metadata.srs.commons.domain.RecordNotFoundException;
 import com.acy.exam.metadata.srs.studentdomain.command.RegisterStudentCommand;
+import com.acy.exam.metadata.srs.studentdomain.command.UpdateStudentCommand;
 import com.acy.exam.metadata.srs.studentdomain.entity.Student;
 import com.acy.exam.metadata.srs.studentdomain.entity.StudentFactory;
 import reactor.core.publisher.Mono;
@@ -11,6 +13,7 @@ public class StudentDomainService {
     private final StudentDomainRepository repository;
     private final StudentEventPublisher eventPublisher;
     private final StudentFactory studentFactory;
+    private final boolean generateEvent;
 
     public StudentDomainService(StudentDomainRepository repository) {
         this(repository, null);
@@ -20,12 +23,23 @@ public class StudentDomainService {
         this.repository = repository;
         this.eventPublisher = eventPublisher;
 
-        boolean generateEvent = nonNull(eventPublisher);
+        this.generateEvent = nonNull(eventPublisher);
         this.studentFactory = new StudentFactory(repository::generateNextStudentNumber, generateEvent);
     }
 
     public Mono<String> registerNewStudent(RegisterStudentCommand command) {
         return studentFactory.createStudent(command)
+            .flatMap(this::persistAndOptionallyPublish);
+    }
+
+    public Mono<String> updateStudentRecord(String studentNumber, UpdateStudentCommand command) {
+        return repository.getStudentDetails(studentNumber)
+            .switchIfEmpty(Mono.error(() -> {
+                String message = String.format("Student %s does not exist.", studentNumber);
+                return new RecordNotFoundException(message);
+            }))
+            .map(Student::new)
+            .map(student -> student.update(command, generateEvent))
             .flatMap(this::persistAndOptionallyPublish);
     }
 
