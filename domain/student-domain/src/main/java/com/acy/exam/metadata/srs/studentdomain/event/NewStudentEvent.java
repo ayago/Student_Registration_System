@@ -13,5 +13,4 @@ public class NewStudentEvent implements Event {
     public final String firstName;
     public final String lastName;
     public final LocalDate dateRegistered;
-    private final LocalDate dateUpdated;
 }
