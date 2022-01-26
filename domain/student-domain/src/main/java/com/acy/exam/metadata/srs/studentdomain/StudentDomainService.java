@@ -34,12 +34,17 @@ public class StudentDomainService {
 
     public Mono<String> updateStudentRecord(String studentNumber, UpdateStudentCommand command) {
         return repository.getStudentDetails(studentNumber)
-            .switchIfEmpty(Mono.error(() -> {
-                String message = String.format("Student %s does not exist.", studentNumber);
-                return new RecordNotFoundException(message);
-            }))
+            .switchIfEmpty(getNotFoundExceptionPublisher())
             .map(Student::new)
             .map(student -> student.update(command, generateEvent))
+            .flatMap(this::persistAndOptionallyPublish);
+    }
+
+    public Mono<String> deactivateStudentRecord(String studentNumber) {
+        return repository.getStudentDetails(studentNumber)
+            .switchIfEmpty(getNotFoundExceptionPublisher())
+            .map(Student::new)
+            .map(student -> student.deactivate(generateEvent))
             .flatMap(this::persistAndOptionallyPublish);
     }
 
@@ -54,5 +59,10 @@ public class StudentDomainService {
                 )
                 .then(Mono.just(studentState.studentNumber));
         });
+    }
+
+    private static <T> Mono<T> getNotFoundExceptionPublisher(){
+        return Mono.error(
+            () -> new RecordNotFoundException("Cannot perform operation on non existing student record."));
     }
 }

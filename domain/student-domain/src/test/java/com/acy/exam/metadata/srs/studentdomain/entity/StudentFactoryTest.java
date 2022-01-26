@@ -59,6 +59,7 @@ public class StudentFactoryTest {
                     .dateRegistered(LocalDate.now())
                     .firstName("Baby")
                     .lastName("Maguire")
+                    .recordDeactivated(false)
                     .build();
 
 

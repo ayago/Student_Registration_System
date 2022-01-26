@@ -29,6 +29,9 @@ public class StudentState {
 
     private final LocalDate dateUpdated;
 
+    @NotNull
+    public final Boolean recordDeactivated;
+
     public Optional<LocalDate> getDateUpdated(){
         return Optional.ofNullable(dateUpdated);
     }
